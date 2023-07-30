@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  eda.api:
+    image: ${DOCKER_REGISTRY-}edaapi
+    build:
+      context: .
+      dockerfile: src/Presentation/Api/Dockerfile
