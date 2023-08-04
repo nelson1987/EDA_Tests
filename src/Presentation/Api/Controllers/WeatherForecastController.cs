@@ -34,11 +34,11 @@ public record AberturaContaCommand : IRequest<AberturaContaCommandResponse>
     public string ClientDocument { get; set; }
     public static implicit operator Conta(AberturaContaCommand command)
     {
-        return new Conta(command.ClientName,command.ClientDocument);
+        return new Conta(command.ClientName, command.ClientDocument);
     }
     public static implicit operator ContaCriadaEvent(AberturaContaCommand command)
     {
-        return new ContaCriadaEvent(command.ClientName,command.ClientDocument);
+        return new ContaCriadaEvent(command.ClientName, command.ClientDocument);
     }
 }
 public record AberturaContaCommandResponse(string ClientName, string ClientDocument);
@@ -60,10 +60,10 @@ public class AberturaContaCommandHandler : IRequestHandler<AberturaContaCommand,
             await _contaCriadaProducer.Publish(request);
             _log.LogInformation("END");
         }
-        catch (Exception ex)
+        catch (Exception exception)
         {
             _unitOfWork.Rollback();
-            _log.LogInformation("ERR");
+            _log.LogInformation("ERR", exception);
         }
         //throw new NotImplementedException();
         return new AberturaContaCommandResponse(request.ClientName, request.ClientDocument);

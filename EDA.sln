@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EDA.Functional.Tests", "tes
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{9BD0216F-5E5E-46B7-91F1-77E45CCCC83C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SonarTest", "SonarTest\SonarTest.csproj", "{BC212532-1D80-45BA-B65E-D3215DC0E0BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{9BD0216F-5E5E-46B7-91F1-77E45CCCC83C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BD0216F-5E5E-46B7-91F1-77E45CCCC83C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BD0216F-5E5E-46B7-91F1-77E45CCCC83C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC212532-1D80-45BA-B65E-D3215DC0E0BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC212532-1D80-45BA-B65E-D3215DC0E0BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC212532-1D80-45BA-B65E-D3215DC0E0BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC212532-1D80-45BA-B65E-D3215DC0E0BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,5 +95,8 @@ Global
 		{D316D72D-919D-4B43-A8FD-931935DE8A10} = {93BB5777-8948-4C71-9FE0-D836341449DC}
 		{F644D442-E29F-46D1-8F7E-8C5E482157CB} = {93BB5777-8948-4C71-9FE0-D836341449DC}
 		{0B3C2C7C-D223-4FE0-AA2F-86A2DAC1988C} = {93BB5777-8948-4C71-9FE0-D836341449DC}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B0D717A0-2FEE-454A-B524-7A4AB254A2BA}
 	EndGlobalSection
 EndGlobal
