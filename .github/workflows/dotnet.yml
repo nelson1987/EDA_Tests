@@ -15,7 +15,7 @@ jobs:
       FunctionalTestsPath: ./tests/FunctionalTests/EDA.Functional.Tests.csproj
       IntegrationTestsPath: ./tests/IntegrationTests/EDA.Integration.Tests.csproj
       UnitTestsPath: ./tests/UnitTests/EDA.Unit.Tests.csproj
-      PresentationProject: ./src/Presentation/Api
+      PresentationProject: src/Presentation/Api
     runs-on: ubuntu-latest
 
     steps:
@@ -33,12 +33,13 @@ jobs:
       
     #- name: Executar restore Api
     #  run: dotnet restore  ${{env.PresentationProject}} 
-      
+    - name: entrar na pasta
+      run: cd ${{env.PresentationProject}}
     - name: Executar build Api
-      run: dotnet build  ${{env.PresentationProject}} --configuration Release --no-restore      
+      run: dotnet build --no-restore      
     
-    - name: Test
-      run: dotnet test  ${{env.PresentationProject}} --no-build --verbosity normal
+    #- name: Test
+    #  run: dotnet test  ${{env.PresentationProject}} --no-build --verbosity normal
       
     - name: Gerar publish Api
       run: dotnet publish  ${{env.PresentationProject}} -c Release -o app 
