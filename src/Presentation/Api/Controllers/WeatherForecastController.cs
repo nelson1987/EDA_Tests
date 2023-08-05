@@ -20,12 +20,17 @@ public class ContaController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] AberturaContaCommand command, CancellationToken cancellationToken)
     {
-        //https://masstransit.io/documentation/configuration/transports/kafka
-        //https://www.macoratti.net/21/01/c_cancelasync1.htm
-        //https://www.infoworld.com/article/3692811/how-to-use-the-unit-of-work-pattern-in-aspnet-core.html
-        //https://dotnettutorials.net/lesson/unit-of-work-csharp-mvc/
-        await _mediator.Send(command, cancellationToken);
-        return Ok(command);
+        if (ModelState.IsValid)
+        {
+            //https://masstransit.io/documentation/configuration/transports/kafka
+            //https://www.macoratti.net/21/01/c_cancelasync1.htm
+            //https://www.infoworld.com/article/3692811/how-to-use-the-unit-of-work-pattern-in-aspnet-core.html
+            //https://dotnettutorials.net/lesson/unit-of-work-csharp-mvc/
+            await _mediator.Send(command, cancellationToken);
+            return Ok(command);
+
+        }
+        return Problem();
     }
 }
 public record AberturaContaCommand : IRequest<AberturaContaCommandResponse>

@@ -198,6 +198,10 @@ dotnet_naming_rule.propprivread_should_be_startswith__.severity = error
 dotnet_naming_rule.propprivread_should_be_startswith__.symbols = propprivread
 dotnet_naming_rule.propprivread_should_be_startswith__.style = startswith__
 
+dotnet_naming_rule.async_should_be_pascal_case.severity = error
+dotnet_naming_rule.async_should_be_pascal_case.symbols = async
+dotnet_naming_rule.async_should_be_pascal_case.style = pascal_case
+
 dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion
 dotnet_naming_rule.types_should_be_pascal_case.symbols = types
 dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case
@@ -224,7 +228,14 @@ dotnet_naming_symbols.propprivread.applicable_kinds = *
 dotnet_naming_symbols.propprivread.applicable_accessibilities = private
 dotnet_naming_symbols.propprivread.required_modifiers = readonly
 
+dotnet_naming_symbols.async.applicable_kinds = method
+dotnet_naming_symbols.async.applicable_accessibilities = *
+dotnet_naming_symbols.async.required_modifiers = async
+
 # Estilos de nomenclatura
+dotnet_naming_rule.async_methods_with_async_suffix.severity = suggestion
+dotnet_naming_rule.async_methods_with_async_suffix.symbols = async
+dotnet_naming_rule.async_methods_with_async_suffix.style = ends_with_async
 
 dotnet_naming_style.pascal_case.required_prefix = 
 dotnet_naming_style.pascal_case.required_suffix = 
