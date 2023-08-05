@@ -1,4 +1,5 @@
 using EDA.Api.Controllers;
+using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -8,9 +9,16 @@ namespace EDA.Unit.Tests;
 
 public class Tests
 {
+    public Mock<ILogger<ContaController>> logger { get; private set; }
+    public Mock<IMediator> mediator { get; private set; }
+    public ContaController controller { get; private set; }
+
     [SetUp]
     public void Setup()
     {
+        logger = new Mock<ILogger<ContaController>>();
+        mediator = new Mock<IMediator>();
+        controller = new ContaController(logger.Object, mediator.Object);
     }
 
     [Test]
@@ -27,40 +35,30 @@ public class Tests
         Assert.That(myInstanceToTest.MethodToTest(1), Is.EqualTo(5));
     }
     [Test]
-    public async Task Test2()
+    public async Task PostMethod_Has_Invalid_ModelState()
     {
-        var logger = new Mock<ILogger<ContaController>>();
-        var mediator = new Mock<IMediator>();
-        var controller = new ContaController(logger.Object, mediator.Object);
         controller.ModelState.AddModelError("Name", "Fake Error");
         AberturaContaCommand vm = new AberturaContaCommand()
         {
             ClientName = "Teste",
             ClientDocument = "28394"
         };
-        IActionResult result = await controller.Post(vm, new CancellationToken());
-        //var viewResult = (AberturaContaCommandResponse)result;
-        //Assert.That(viewResult.ClientName, Is.EqualTo(vm.ClientName));
+        ObjectResult result = (ObjectResult)await controller.Post(vm, new CancellationToken());
+        result.StatusCode.Should().Be(500);
     }
     [Test]
-    public void Test3()
+    public async Task PostMethod_Successfully()
     {
-        var logger = new Mock<ILogger<ContaController>>();
-        var mediator = new Mock<IMediator>();
-        var controller = new ContaController(logger.Object, mediator.Object);
-        AberturaContaCommandResponse response = new AberturaContaCommandResponse("Teste", "28394");
+        AberturaContaCommandResponse mockResponse = new AberturaContaCommandResponse("Teste", "28394");
         mediator.Setup(x => x.Send(It.IsAny<AberturaContaCommand>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
+                .ReturnsAsync(mockResponse);
+        ObjectResult result = (ObjectResult)await controller.Post(It.IsAny<AberturaContaCommand>(), new CancellationToken());
+        result.Value.Should().BeOfType<AberturaContaCommandResponse>();
+        result.StatusCode.Should().Be(200);
 
-        //controller.ModelState.AddModelError("Name", "Fake Error");
-        //AberturaContaCommand vm = new AberturaContaCommand()
-        //{
-        //    ClientName = "Teste",
-        //    ClientDocument = "28394"
-        //};
-        //IActionResult result = await controller.Post(vm, new CancellationToken());
-        //var viewResult = (AberturaContaCommandResponse)result;
-        //Assert.That(viewResult.ClientName, Is.EqualTo(vm.ClientName));
+        AberturaContaCommandResponse response = (AberturaContaCommandResponse)result.Value;
+        response.ClientName.Should().Be(mockResponse.ClientName);
+        response.ClientDocument.Should().Be(mockResponse.ClientDocument);
     }
 }
 public class ClassToTest

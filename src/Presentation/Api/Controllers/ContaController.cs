@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EDA.Api.Controllers;
 [ApiController]
-[Route("[controller]s")]
+[Route("api/[controller]s")]
 public class ContaController : ControllerBase
 {
     private readonly ILogger<ContaController> _logger;
@@ -24,8 +24,8 @@ public class ContaController : ControllerBase
             //https://www.macoratti.net/21/01/c_cancelasync1.htm
             //https://www.infoworld.com/article/3692811/how-to-use-the-unit-of-work-pattern-in-aspnet-core.html
             //https://dotnettutorials.net/lesson/unit-of-work-csharp-mvc/
-            await _mediator.Send(command, cancellationToken);
-            return Ok(command);
+            AberturaContaCommandResponse response = await _mediator.Send(command, cancellationToken);
+            return Ok(response);
 
         }
         return Problem();
@@ -52,23 +52,33 @@ public class AberturaContaCommandHandler : IRequestHandler<AberturaContaCommand,
     private readonly ILogger<AberturaContaCommandHandler> _log;
     private readonly IKafkaProducer<ContaCriadaEvent> _contaCriadaProducer;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IHttpLogisticaService _httpLogisticaService;
+
+    public AberturaContaCommandHandler(ILogger<AberturaContaCommandHandler> log, IKafkaProducer<ContaCriadaEvent> contaCriadaProducer, IUnitOfWork unitOfWork, IHttpLogisticaService httpLogisticaService)
+    {
+        _log = log;
+        _contaCriadaProducer = contaCriadaProducer;
+        _unitOfWork = unitOfWork;
+        _httpLogisticaService = httpLogisticaService;
+    }
+
     public async Task<AberturaContaCommandResponse> Handle(AberturaContaCommand request, CancellationToken cancellationToken)
     {
         try
         {
             _log.LogInformation("INI");
-            await _unitOfWork.BeginTransaction();
+            await _unitOfWork.BeginTransactionAsync();
             await _unitOfWork.Repository<Conta>().Insert(request);
             await _unitOfWork.Commit();
             await _contaCriadaProducer.Publish(request);
+            await _httpLogisticaService.EnviarCartaoDebito(request);
             _log.LogInformation("END");
         }
         catch (Exception exception)
         {
-            _unitOfWork.Rollback();
+            await _unitOfWork.RollbackAsync();
             _log.LogInformation("ERR", exception);
         }
-        //throw new NotImplementedException();
         return new AberturaContaCommandResponse(request.ClientName, request.ClientDocument);
     }
 }
@@ -78,9 +88,9 @@ public interface IEntity
 }
 public interface IUnitOfWork : IDisposable
 {
-    Task BeginTransaction();
+    Task BeginTransactionAsync();
     Task Commit();
-    Task Rollback();
+    Task RollbackAsync();
     IRepository<T> Repository<T>() where T : IEntity;
 }
 public interface IRepository<T> where T : IEntity
@@ -95,4 +105,8 @@ public interface IEvent
 public interface IKafkaProducer<T> where T : IEvent
 {
     Task Publish(T @event);
+}
+public interface IHttpLogisticaService
+{
+    Task EnviarCartaoDebito(Conta conta);
 }
