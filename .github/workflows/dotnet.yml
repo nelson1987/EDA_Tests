@@ -36,7 +36,7 @@ jobs:
     #- name: entrar na pasta
     #  run: cd ${{env.PresentationProject}}
     - name: Executar build Api
-      run: dotnet build --no-restore      
+      run: dotnet build ./src/Presentation/Api/EDA.Api.csproj --no-restore      
     
     #- name: Test
     #  run: dotnet test  ${{env.PresentationProject}} --no-build --verbosity normal
