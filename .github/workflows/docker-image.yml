@@ -14,9 +14,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build Compose
-      run: docker compose up 
-    - name: Build Compose
-      run: docker compose down 
+    #- name: Build Compose
+    #  run: docker compose up 
+    #- name: Build Compose
+    #  run: docker compose down 
     - name: Build the Docker image
       run: docker build ./src --file Dockerfile --tag my-image-name:$(date +%s)
