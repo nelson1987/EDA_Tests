@@ -2,8 +2,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EDA.Api.Controllers;
-
-
 [ApiController]
 [Route("[controller]s")]
 public class ContaController : ControllerBase
