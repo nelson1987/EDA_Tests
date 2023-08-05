@@ -31,8 +31,8 @@ jobs:
     #- name: Executar testes Unitarios
     #  run: dotnet test ${{env.UnitTestsPath}} --verbosity minimal
       
-    #- name: Executar restore Api
-    #  run: dotnet restore  ${{env.PresentationProject}} 
+    - name: Executar restore Api
+      run: dotnet restore ./src/Presentation/Api/EDA.Api.csproj
     #- name: entrar na pasta
     #  run: cd ${{env.PresentationProject}}
     - name: Executar build Api
