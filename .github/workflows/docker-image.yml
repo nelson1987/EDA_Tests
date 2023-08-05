@@ -19,4 +19,4 @@ jobs:
     #- name: Build Compose
     #  run: docker compose down 
     - name: Build the Docker image
-      run: docker build ./src --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build ./src/Presentation/Api --file Dockerfile --tag my-image-name:$(date +%s)
