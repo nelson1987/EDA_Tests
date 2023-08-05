@@ -1,0 +1,22 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build Compose
+      run: docker compose up 
+    - name: Build Compose
+      run: docker compose down 
+    - name: Build the Docker image
+      run: docker build ./src --file Dockerfile --tag my-image-name:$(date +%s)
