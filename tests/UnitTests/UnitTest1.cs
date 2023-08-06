@@ -9,16 +9,16 @@ namespace EDA.Unit.Tests;
 
 public class Tests
 {
-    public Mock<ILogger<ContaController>> logger { get; private set; }
-    public Mock<IMediator> mediator { get; private set; }
-    public ContaController controller { get; private set; }
+    private Mock<ILogger<ContaController>> MockLogger { get; set; }
+    private Mock<IMediator> MockMediator { get; set; }
+    private ContaController Controller { get; set; }
 
     [SetUp]
     public void Setup()
     {
-        logger = new Mock<ILogger<ContaController>>();
-        mediator = new Mock<IMediator>();
-        controller = new ContaController(logger.Object, mediator.Object);
+        MockLogger = new Mock<ILogger<ContaController>>();
+        MockMediator = new Mock<IMediator>();
+        Controller = new ContaController(MockLogger.Object, MockMediator.Object);
     }
 
     [Test]
@@ -30,29 +30,27 @@ public class Tests
         int res = await myMockDependency.Object.MyMethodAsync(5);
         myMockDependency.Verify(x => x.MyMethodAsync(5), Times.AtLeast(1));
 
-
-        var myInstanceToTest = new ClassToTest();
-        Assert.That(myInstanceToTest.MethodToTest(1), Is.EqualTo(5));
+        Assert.That(ClassToTest.MethodToTest(1), Is.EqualTo(5));
     }
     [Test]
     public async Task PostMethod_Has_Invalid_ModelState()
     {
-        controller.ModelState.AddModelError("Name", "Fake Error");
-        AberturaContaCommand vm = new AberturaContaCommand()
+        Controller.ModelState.AddModelError("Name", "Fake Error");
+        AberturaContaCommand vm = new()
         {
             ClientName = "Teste",
             ClientDocument = "28394"
         };
-        ObjectResult result = (ObjectResult)await controller.Post(vm, new CancellationToken());
+        ObjectResult result = (ObjectResult)await Controller.Post(vm, new CancellationToken());
         result.StatusCode.Should().Be(500);
     }
     [Test]
     public async Task PostMethod_Successfully()
     {
-        AberturaContaCommandResponse mockResponse = new AberturaContaCommandResponse("Teste", "28394");
-        mediator.Setup(x => x.Send(It.IsAny<AberturaContaCommand>(), It.IsAny<CancellationToken>()))
+        AberturaContaCommandResponse mockResponse = new(Guid.NewGuid(), "Teste", "28394");
+        MockMediator.Setup(x => x.Send(It.IsAny<AberturaContaCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mockResponse);
-        ObjectResult result = (ObjectResult)await controller.Post(It.IsAny<AberturaContaCommand>(), new CancellationToken());
+        ObjectResult result = (ObjectResult)await Controller.Post(It.IsAny<AberturaContaCommand>(), new CancellationToken());
         result.Value.Should().BeOfType<AberturaContaCommandResponse>();
         result.StatusCode.Should().Be(200);
 
@@ -63,7 +61,7 @@ public class Tests
 }
 public class ClassToTest
 {
-    public int MethodToTest(int v)
+    public static int MethodToTest(int v)
     {
         return v + 4;
     }
