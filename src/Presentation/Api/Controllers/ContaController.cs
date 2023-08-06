@@ -14,6 +14,26 @@ public class ContaController : ControllerBase
         _logger = logger;
         _mediator = mediator;
     }
+    [HttpGet]
+    public async Task<IActionResult> Get(CancellationToken cancellationToken)
+    {
+        string mensagem = string.Empty;
+        await Task.Run(() =>
+        {
+            Thread.Sleep(TimeSpan.FromSeconds(30));
+            _logger.LogInformation("INI");
+            _logger.LogInformation("END");
+            mensagem = "List All";
+        }, cancellationToken);
+        return Ok(mensagem);
+    }
+    //[HttpGet("{int:id}")]
+    //public IActionResult GetWithFilters(int id, CancellationToken cancellationToken)
+    //{
+    //    _logger.LogInformation("INI");
+    //    _logger.LogInformation("END");
+    //    return Ok($"List with filters: {typeof(int)}:{nameof(id)}");
+    //}
 
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] AberturaContaCommand command, CancellationToken cancellationToken)
